@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PGDBA Card Forge · Git Masterclass 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #141720;
+    --surface2: #1c2030;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --hint: #374151;
+    --accent: #4ade80;
+    --accent2: #22c55e;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+  .nav-logo span { color: var(--muted); }
+  .nav-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 10px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 52px 24px 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .hero h1 strong { font-weight: 500; color: var(--accent); }
+  .hero p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── FORM ── */
+  .form-panel {
+    padding: 40px 40px 40px 0;
+    border-right: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .form-group { margin-bottom: 24px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+  }
+
+  input[type=text], select, textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type=text]:focus,
+  select:focus,
+  textarea:focus { border-color: var(--accent); }
+  textarea { resize: none; line-height: 1.5; height: 60px; }
+  select { appearance: none; cursor: pointer; }
+  select option { background: #1c2030; }
+
+  /* stat sliders */
+  .stat-grid { display: grid; gap: 10px; }
+  .stat-line {
+    display: grid;
+    grid-template-columns: 72px 1fr 28px;
+    align-items: center;
+    gap: 10px;
+  }
+  .stat-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    text-align: right;
+  }
+
+  /* ── PREVIEW PANEL ── */
+  .preview-panel {
+    padding: 40px 0 40px 40px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .preview-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+
+  /* ── THE CARD ── */
+  .card {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 14px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .card-top {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .card-class-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .card-class-sub {
+    display: block;
+    font-size: 9px;
+    font-weight: 400;
+    opacity: 0.75;
+    letter-spacing: 0.04em;
+  }
+  .card-name {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .card-handle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .card-origin-line {
+    font-size: 10px;
+    color: var(--hint);
+    margin-top: 5px;
+    letter-spacing: 0.02em;
+  }
+
+  .card-art-strip {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .card-art-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,0.015) 20px,
+      rgba(255,255,255,0.015) 21px
+    );
+  }
+
+  .card-stats-block {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .card-stat-row:last-child { margin-bottom: 0; }
+  .csl { font-family: var(--mono); font-size: 10px; color: var(--muted); width: 46px; flex-shrink: 0; }
+  .pips { display: flex; gap: 3px; }
+  .pip {
+    width: 20px; height: 5px;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+
+  .card-body-block { padding: 12px 16px; }
+  .cf { margin-bottom: 9px; }
+  .cf:last-child { margin-bottom: 0; }
+  .cfl {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .cfv {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .card-foot {
+    padding: 8px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+  }
+  .card-foot-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--hint);
+  }
+  .cp-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* ── COPY BUTTON ── */
+  .actions { margin-top: 20px; display: grid; gap: 8px; width: 100%; max-width: 300px; }
+  .btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d1117;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .copy-feedback {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-align: center;
+    min-height: 18px;
+    transition: opacity 0.3s;
+  }
+
+  /* ── FOOTER INSTRUCTIONS ── */
+  .instructions {
+    border-top: 1px solid var(--border);
+    padding: 40px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 24px;
+  }
+  .step {
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .step-title {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .step-code {
+    margin-top: 8px;
+    padding: 6px 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  @media (max-width: 800px) {
+    .main { grid-template-columns: 1fr; }
+    .form-panel { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 0; }
+    .preview-panel { position: static; height: auto; padding: 32px 0; }
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">~/ <span>pgdba-cards</span> / forge</div>
+  <div class="nav-badge">Git Masterclass 2025</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">// pull request activity</div>
+  <h1>Build your<br><strong>data scientist card</strong></h1>
+  <p>Fill in the form. Copy the markdown. Open a PR to the class repo. Your card joins the deck.</p>
+</div>
+
+<div class="main">
+
+  <!-- FORM -->
+  <div class="form-panel">
+
+    <div class="form-group">
+      <div class="section-label">01 — identity</div>
+      <div class="form-row" style="margin-bottom:12px;">
+        <div>
+          <label>full name</label>
+          <input type="text" id="f-name" placeholder="Arjun Mehta" value="">
+        </div>
+        <div>
+          <label>github handle</label>
+          <input type="text" id="f-handle" placeholder="@arjunmehta" value="">
+        </div>
+      </div>
+      <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
+        <div>
+          <label>class archetype</label>
+          <select id="f-class">
+            <option value="quant">📈 Quant Guy (Chill Guy)</option>
+            <option value="consultant">📊 Consultant (Storyteller)</option>
+            <option value="aiproduct">🤖 AI Product Engineer (Hype Man)</option>
+            <option value="pharma">💊 Pharma (Drug User)</option>
+            <option value="sde">💻 SDE (Drug Abuser)</option>
+            <option value="datascientist">🧑‍💻 Data Scientist (Analyst but Cool)</option>
+            <option value="dataengineer">🔧 Data Engineer (Analyst but Cooler)</option>
+            <option value="mlops">⚙️ MLOps (Blame Machine)</option>
+          </select>
+        </div>
+        <div>
+          <label>my go-to resolve error</label>
+          <select id="f-resolve">
+            <option value="chatgpt">🤖 ChatGPT & others (AI Slaves)</option>
+            <option value="stackoverflow">🆘 Stack Overflow (Send Help)</option>
+            <option value="pal">🧙 Pal Sahab (Need I say more?)</option>
+            <option value="sumit">👑 Sumit Sahab (One and Only)</option>
+            <option value="profs">😐 Profs (Said no one ever)</option>
+            <option value="lone">🫠 Lone Warrior (Error 404 — Still Exists)</option>
+          </select>
+        </div>
+        <div>
+          <label>home institute</label>
+          <select id="f-origin">
+            <option value="IIMC">IIM Calcutta</option>
+            <option value="IITKGP">IIT Kharagpur</option>
+            <option value="ISIK">ISI Kolkata</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="section-label">02 — stats</div>
+      <div class="stat-grid">
+        <div class="stat-line">
+          <span class="stat-name">Python</span>
+          <input type="range" min="1" max="5" value="3" step="1" data-stat="python">
+          <span class="stat-num" id="sv-python">3</span>
+        </div>
+        <div class="stat-line">
+          <span class="stat-name">SQL</span>
+          <input type="range" min="1" max="5" value="3" step="1" data-stat="sql">
+          <span class="stat-num" id="sv-sql">3</span>
+        </div>
+        <div class="stat-line">
+          <span class="stat-name">Math</span>
+          <input type="range" min="1" max="5" value="3" step="1" data-stat="math">
+          <span class="stat-num" id="sv-math">3</span>
+        </div>
+        <div class="stat-line">
+          <span class="stat-name">ML</span>
+          <input type="range" min="1" max="5" value="3" step="1" data-stat="ml">
+          <span class="stat-num" id="sv-ml">3</span>
+        </div>
+        <div class="stat-line">
+          <span class="stat-name">Domain</span>
+          <input type="range" min="1" max="5" value="3" step="1" data-stat="domain">
+          <span class="stat-num" id="sv-domain">3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="section-label">03 — card text</div>
+      <div style="display:grid; gap:12px;">
+        <div>
+          <label>⚡ superpower — your actual strongest skill, one line</label>
+          <textarea id="f-power" placeholder="e.g. Turns raw equity data into alpha signals before breakfast"></textarea>
+        </div>
+        <div>
+          <label>💀 weakness — be honest, it's funnier</label>
+          <textarea id="f-weakness" placeholder="e.g. Disappears into rabbit holes. Last seen: StackOverflow, 2 AM"></textarea>
+        </div>
+        <div>
+          <label>🗡️ current quest — what you're actively building right now</label>
+          <textarea id="f-quest" placeholder="e.g. Building a limit order book simulator in Python"></textarea>
+        </div>
+        <div>
+          <label>⚰️ cause of death — what will professionally end you</label>
+          <textarea id="f-cod" placeholder="e.g. A NaN that propagated silently for 3 months"></textarea>
+        </div>
+        <div>
+          <label>🏆 legendary item — your best past project, one sharp line</label>
+          <textarea id="f-legendary" placeholder="e.g. CS:GO momentum study · 5,478 rounds analysed"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW + COPY -->
+  <div class="preview-panel">
+    <div class="preview-label">// live preview</div>
+
+    <div class="card" id="live-card">
+      <div class="card-top">
+        <div class="card-class-tag" id="c-tag">📈 Quant</div>
+        <div class="card-name" id="c-name">Your Name</div>
+        <div class="card-handle" id="c-handle">@handle</div>
+        <div class="card-resolve-line" id="c-resolve" style="font-size:10px; color: var(--muted); margin-top:3px; font-family: var(--mono);">🤖 AI Slaves</div>
+        <div class="card-origin-line" id="c-origin">IIM Calcutta · PGDBA 2025</div>
+      </div>
+      <div class="card-art-strip" id="c-art">📈</div>
+      <div class="card-stats-block" id="c-stats"></div>
+      <div class="card-body-block">
+        <div class="cf"><div class="cfl">⚡ Superpower</div><div class="cfv" id="c-power">—</div></div>
+        <div class="cf"><div class="cfl">💀 Weakness</div><div class="cfv" id="c-weakness">—</div></div>
+        <div class="cf"><div class="cfl">🗡️ Current Quest</div><div class="cfv" id="c-quest">—</div></div>
+        <div class="cf"><div class="cfl">⚰️ Cause of Death</div><div class="cfv" id="c-cod">—</div></div>
+        <div class="cf"><div class="cfl">🏆 Legendary Item</div><div class="cfv" id="c-legendary">—</div></div>
+      </div>
+      <div class="card-foot">
+        <span class="card-foot-label">PGDBA · 2025</span>
+        <span class="cp-badge" id="c-cp" style="color: #4ade80">CP 18</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="copyMarkdown()">Copy markdown → paste into .md file</button>
+      <button class="btn btn-secondary" onclick="showInstructions()">How to open the PR ↓</button>
+      <div class="copy-feedback" id="feedback"></div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTRUCTIONS -->
+<div class="instructions" id="instructions-section" style="display:none">
+  <div class="section-label" style="max-width:1052px;margin:0 auto 0;">how to submit your card</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Copy the markdown</div>
+      <div class="step-desc">Hit the green button above. The full <code>.md</code> file contents are copied to your clipboard.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Create the file</div>
+      <div class="step-desc">In your fork, inside the <code>cards/</code> folder, create a new file named exactly your GitHub handle.</div>
+      <div class="step-code">cards/your-handle.md</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Commit & push</div>
+      <div class="step-desc">Add, commit, and push to your feature branch — not main.</div>
+      <div class="step-code">git checkout -b card/your-handle<br>git add .<br>git commit -m "card: Add your-handle"<br>git push origin card/your-handle</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Open the PR</div>
+      <div class="step-desc">Go to your fork on GitHub. Open a Pull Request to the class repo. In the description, write:</div>
+      <div class="step-code">Fixes #YOUR-ISSUE-NUMBER</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const classes = {
+  quant:       { label: '📈 Quant Guy',        sub: 'Chill Guy',            bg: 'rgba(59,130,246,0.15)',  color: '#60a5fa', pip: '#3b82f6',  art: '📈' },
+  consultant:  { label: '📊 Consultant',        sub: 'Storyteller',          bg: 'rgba(245,158,11,0.15)',  color: '#fbbf24', pip: '#f59e0b',  art: '📊' },
+  aiproduct:   { label: '🤖 AI Product Eng.',   sub: 'Hype Man',             bg: 'rgba(139,92,246,0.15)', color: '#a78bfa', pip: '#7c3aed',  art: '🤖' },
+  pharma:      { label: '💊 Pharma',            sub: 'Drug User',            bg: 'rgba(16,185,129,0.15)', color: '#34d399', pip: '#10b981',  art: '💊' },
+  sde:         { label: '💻 SDE',               sub: 'Drug Abuser',          bg: 'rgba(239,68,68,0.15)',  color: '#f87171', pip: '#ef4444',  art: '💻' },
+  datascientist:{ label: '🧑‍💻 Data Scientist', sub: 'Analyst but Cool',    bg: 'rgba(14,165,233,0.15)', color: '#38bdf8', pip: '#0ea5e9',  art: '🧑‍💻' },
+  dataengineer: { label: '🔧 Data Engineer',    sub: 'Analyst but Cooler',   bg: 'rgba(20,184,166,0.15)', color: '#2dd4bf', pip: '#14b8a6',  art: '🔧' },
+  mlops:       { label: '⚙️ MLOps',             sub: 'Blame Machine',        bg: 'rgba(107,114,128,0.15)',color: '#9ca3af', pip: '#6b7280',  art: '⚙️' },
+};
+const statKeys = ['python','sql','math','ml','domain'];
+const statLabels = { python:'Python', sql:'SQL', math:'Math', ml:'ML', domain:'Domain' };
+const originFull = { IIMC: 'IIM Calcutta', IITKGP: 'IIT Kharagpur', ISIK: 'ISI Kolkata' };
+const classDesc = {
+  quant:        'Algorithmic finance & signal research',
+  consultant:   'Decks, frameworks & vibes-based strategy',
+  aiproduct:    'Ships GPT wrappers, calls it a platform',
+  pharma:       'Domain science & drug discovery pipelines',
+  sde:          'Microservices all the way down',
+  datascientist:'Actually uses the data. Sometimes.',
+  dataengineer: 'Keeps the data scientists employed',
+  mlops:        'It was working in dev, not their problem',
+};
+
+function vals() {
+  const stats = {};
+  statKeys.forEach(k => { stats[k] = parseInt(document.querySelector(`[data-stat="${k}"]`).value); });
+  return {
+    name:     document.getElementById('f-name').value.trim() || 'Your Name',
+    handle:   document.getElementById('f-handle').value.trim() || '@handle',
+    cls:      document.getElementById('f-class').value,
+    resolve:  document.getElementById('f-resolve').value,
+    origin:   document.getElementById('f-origin').value,
+    power:    document.getElementById('f-power').value.trim() || '—',
+    weakness: document.getElementById('f-weakness').value.trim() || '—',
+    cod:      document.getElementById('f-cod').value.trim() || '—',
+    quest:    document.getElementById('f-quest').value.trim() || '—',
+    legendary:document.getElementById('f-legendary').value.trim() || '—',
+    stats,
+  };
+}
+
+function render() {
+  const v = vals();
+  const c = classes[v.cls];
+
+  const resolveLabels = {
+    chatgpt:      '🤖 AI Slaves',
+    stackoverflow:'🆘 Send Help',
+    pal:          '🧙 Pal Sahab',
+    sumit:        '👑 Sumit Sahab',
+    profs:        '😐 Profs (lol)',
+    lone:         '🫠 Error 404 — Still Exists',
+  };
+  document.getElementById('c-resolve').textContent = 'go-to: ' + resolveLabels[v.resolve];
+  const tagEl = document.getElementById('c-tag');
+  tagEl.innerHTML = c.label + '<span class="card-class-sub">' + c.sub + '</span>';
+  tagEl.style.background = c.bg;
+  tagEl.style.color = c.color;
+  document.getElementById('c-name').textContent = v.name;
+  document.getElementById('c-handle').textContent = v.handle.startsWith('@') ? v.handle : '@' + v.handle;
+  document.getElementById('c-origin').textContent = originFull[v.origin] + ' · PGDBA 2025';
+  document.getElementById('c-art').textContent = c.art;
+
+  const total = Object.values(v.stats).reduce((a,b) => a+b, 0);
+  const cp = total + 3;
+
+  document.getElementById('c-stats').innerHTML = statKeys.map(k => `
+    <div class="card-stat-row">
+      <span class="csl">${statLabels[k]}</span>
+      <div class="pips">${Array.from({length:5}, (_,i) =>
+        `<div class="pip" style="background:${i < v.stats[k] ? c.pip : '#1f2937'}"></div>`
+      ).join('')}</div>
+    </div>`).join('');
+
+  ['power','weakness','cod','quest','legendary'].forEach(f => {
+    document.getElementById('c-' + f).textContent = v[f];
+  });
+
+  const cpEl = document.getElementById('c-cp');
+  cpEl.textContent = 'CP ' + cp;
+  cpEl.style.color = cp >= 22 ? c.color : '#6b7280';
+
+  statKeys.forEach(k => {
+    document.getElementById('sv-' + k).textContent = v.stats[k];
+  });
+}
+
+function pip(n) { return '█'.repeat(n) + '░'.repeat(5-n); }
+
+function copyMarkdown() {
+  const v = vals();
+  const c = classes[v.cls];
+  const cp = Object.values(v.stats).reduce((a,b) => a+b, 0) + 3;
+  const handle = v.handle.startsWith('@') ? v.handle : '@' + v.handle;
+
+  const resolveLabels = {
+    chatgpt:      '🤖 ChatGPT & others (AI Slaves)',
+    stackoverflow:'🆘 Stack Overflow (Send Help)',
+    pal:          '🧙 Pal Sahab (Need I say more?)',
+    sumit:        '👑 Sumit Sahab (One and Only)',
+    profs:        '😐 Profs (Said no one ever)',
+    lone:         '🫠 Lone Warrior (Error 404 — Still Exists)',
+  };
+
+  const md =
+`# ${c.art} ${v.name}
+
+> **${handle}** · ${originFull[v.origin]} · PGDBA 2025
+
+---
+
+## Class: ${c.label}
+*${c.sub} · ${classDesc[v.cls]}*
+
+**Go-to resolve error:** ${resolveLabels[v.resolve]}
+
+| Stat | Score |
+|------|-------|
+| Python | \`${pip(v.stats.python)}\` ${v.stats.python}/5 |
+| SQL    | \`${pip(v.stats.sql)}\` ${v.stats.sql}/5 |
+| Math   | \`${pip(v.stats.math)}\` ${v.stats.math}/5 |
+| ML     | \`${pip(v.stats.ml)}\` ${v.stats.ml}/5 |
+| Domain | \`${pip(v.stats.domain)}\` ${v.stats.domain}/5 |
+
+**Combat Power: ${cp}**
+
+---
+
+### ⚡ Superpower
+${v.power}
+
+### 💀 Weakness
+${v.weakness}
+
+### ⚰️ Cause of Death
+${v.cod}
+
+### 🗡️ Current Quest
+${v.quest}
+
+### 🏆 Legendary Item
+${v.legendary}
+
+---
+*PGDBA Git Masterclass 2025 · Submitted via Pull Request*`;
+
+  navigator.clipboard.writeText(md)
+    .then(() => flash('✓ Copied to clipboard — paste into your .md file'))
+    .catch(() => flash('✗ Copy failed — use Ctrl+A / Cmd+A to select manually'));
+}
+
+function flash(msg) {
+  const el = document.getElementById('feedback');
+  el.textContent = msg;
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+function showInstructions() {
+  const el = document.getElementById('instructions-section');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  if (el.style.display === 'block') el.scrollIntoView({ behavior: 'smooth' });
+}
+
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', render);
+});
+
+render();
+</script>
+</body>
+</html>
